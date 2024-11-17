@@ -12,7 +12,7 @@ import cloudflare from "@astrojs/cloudflare";
 
 // https://astro.build/config
 export default defineConfig({
-    site: "http://localhost:4321",
+    site: "homepage-7xc.pages.dev",
     integrations: [solidJs(), UnoCSS({ injectReset: true }), icon(), svelte()],
     markdown: {
         remarkPlugins: [remarkReadingTime],
