@@ -1,68 +1,68 @@
 <script lang="ts">
-  import Shape1 from "./svg-shapes/Shape1.svelte";
-  import Shape2 from "./svg-shapes/Shape2.svelte";
-  import Shape3 from "./svg-shapes/Shape3.svelte";
-  import Shape4 from "./svg-shapes/Shape4.svelte";
-  import gsap from "gsap";
-  import ScrollTrigger from "gsap/dist/ScrollTrigger";
-  import Lenis from "lenis";
-  import { onMount } from "svelte";
+import Shape1 from "./svg-shapes/Shape1.svelte";
+import Shape2 from "./svg-shapes/Shape2.svelte";
+import Shape3 from "./svg-shapes/Shape3.svelte";
+import Shape4 from "./svg-shapes/Shape4.svelte";
+import gsap from "gsap";
+import ScrollTrigger from "gsap/dist/ScrollTrigger";
+import Lenis from "lenis";
+import { onMount } from "svelte";
 
-  onMount(() => {
-    gsap.registerPlugin(ScrollTrigger);
-    const lenis = new Lenis();
+onMount(() => {
+	gsap.registerPlugin(ScrollTrigger);
+	const lenis = new Lenis();
 
-    lenis.on("scroll", (e: any) => {
-      console.log(e);
-    });
+	lenis.on("scroll", (e: any) => {
+		console.log(e);
+	});
 
-    function raf(time: number) {
-      lenis.raf(time);
-      requestAnimationFrame(raf);
-    }
+	function raf(time: number) {
+		lenis.raf(time);
+		requestAnimationFrame(raf);
+	}
 
-    requestAnimationFrame(raf);
-  });
+	requestAnimationFrame(raf);
+});
 
-  onMount(() => {
-    gsap.fromTo(
-      "#first-container svg",
-      { y: "100%", opacity: 0, duration: 1 },
-      { y: 0, opacity: 1, stagger: 0.1 }
-    );
+onMount(() => {
+	gsap.fromTo(
+		"#first-container svg",
+		{ y: "100%", opacity: 0, duration: 1 },
+		{ y: 0, opacity: 1, stagger: 0.1 },
+	);
 
-    const cols = document.getElementsByClassName("column");
+	const cols = document.getElementsByClassName("column");
 
-    gsap.to(cols[1], {
-      ease: "none",
-      scrollTrigger: {
-        trigger: cols,
-        start: "clamp(top bottom)",
-        end: "clamp(bottom top)",
-        scrub: true,
-      },
-      yPercent: -20,
-    });
+	gsap.to(cols[1], {
+		ease: "none",
+		scrollTrigger: {
+			trigger: cols,
+			start: "clamp(top bottom)",
+			end: "clamp(bottom top)",
+			scrub: true,
+		},
+		yPercent: -20,
+	});
 
-    const colsArray = Array.from(cols);
+	const colsArray = Array.from(cols);
 
-    colsArray?.forEach((item, index) => {
-      if (index === 1) return;
+	colsArray?.forEach((item, index) => {
+		if (index === 1) return;
 
-      gsap.to(item, {
-        ease: "none",
-        startAt: { transformOrigin: index === 0 ? "0% 100%" : "100% 100%" },
-        scrollTrigger: {
-          trigger: item,
-          start: "clamp(top bottom)",
-          end: "clamp(bottom top)",
-          scrub: true,
-        },
-        rotation: index === 0 ? -10 : 10,
-        xPercent: index === 0 ? -10 : 10,
-      });
-    });
-  });
+		gsap.to(item, {
+			ease: "none",
+			startAt: { transformOrigin: index === 0 ? "0% 100%" : "100% 100%" },
+			scrollTrigger: {
+				trigger: item,
+				start: "clamp(top bottom)",
+				end: "clamp(bottom top)",
+				scrub: true,
+			},
+			rotation: index === 0 ? -10 : 10,
+			xPercent: index === 0 ? -10 : 10,
+		});
+	});
+});
 </script>
 
 <svelte:head>

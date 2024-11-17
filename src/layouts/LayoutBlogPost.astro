@@ -4,10 +4,10 @@ import type { MarkdownLayoutProps } from "astro";
 import BasicLayout from "./BasicLayout.astro";
 
 type Props = MarkdownLayoutProps<{
-  title: string;
-  description: string;
-  pubDate: string;
-  minutesRead: string;
+	title: string;
+	description: string;
+	pubDate: string;
+	minutesRead: string;
 }>;
 
 const { slug } = Astro.params;
@@ -18,13 +18,13 @@ const { frontmatter } = Astro.props;
   frontmatter={frontmatter}
   slug={slug}
   page="blog"
-  title={`Gianmarco Cavallo - ${frontmatter.title}`}
+  title={`i-yuya - ${frontmatter.title}`}
   description={frontmatter.description}
 >
-  <main class="mx-auto max-w-3xl w-full h-screen p-8 text-neutral-100">
+  <main class="mx-auto max-w-3xl w-full h-screen p-8 text-light-primary dark:text-dark-primary">
     <a
       href="/blog"
-      class="text-white bg-neutral-900 hover:bg-neutral-800 px-4 py-2 border-1 border-solid border-neutral-600 rounded-lg mb-8"
+      class="btn-latte-outline px-4 py-2 mb-8"
       >Back</a
     >
     <div class="my-10">

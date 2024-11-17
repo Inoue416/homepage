@@ -1,5 +1,5 @@
 <script lang="ts">
-	export let transform = "";
+export const transform = "";
 </script>
 
 <svg

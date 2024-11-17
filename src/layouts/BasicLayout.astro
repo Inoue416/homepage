@@ -1,83 +1,84 @@
 ---
 interface Props {
-  title: string;
-  description: string;
-  page?: "travel" | "blog";
-  slug?: string | undefined;
-  frontmatter?: {
-    file: string;
-    url: string | undefined;
-  } & {
-    title: string;
-    description: string;
-    pubDate: string;
-    minutesRead: string;
-  };
+	title: string;
+	description: string;
+	page?: "travel" | "blog";
+	slug?: string | undefined;
+	frontmatter?: {
+		file: string;
+		url: string | undefined;
+	} & {
+		title: string;
+		description: string;
+		pubDate: string;
+		minutesRead: string;
+	};
 }
 
 const { title, description, page, slug, frontmatter } = Astro.props;
 const image =
-  page === "travel"
-    ? `${Astro.url.origin}/globe_preview.webp"`
-    : `${Astro.url.origin}/og-image.png`;
+	page === "travel"
+		? `${Astro.url.origin}/me.webp"`
+		: `${Astro.url.origin}/me.png`;
 
+// TODO
 const schema =
-  page !== "blog"
-    ? {
-        "@context": "http://schema.org",
-        "@type": "Person",
-        name: "Gianmarco",
-        url: "https://gianmarco.xyz",
-        sameAs: [
-          "https://www.linkedin.com/in/gianmarco-cavallo",
-          "https://github.com/Ladvace",
-        ],
-        image: "https://gianmarco.xyz/og-image.png",
-        jobTitle: "Freelance Frontend Developer",
-        worksFor: {
-          "@type": "Organization",
-          name: "Self-Employed",
-          address: {
-            "@type": "PostalAddress",
-            addressLocality: "Italy",
-            addressCountry: "IT",
-          },
-        },
-        nationality: {
-          "@type": "Country",
-          name: "Italy",
-        },
-      }
-    : {
-        "@context": "http://schema.org",
-        "@type": "BlogPosting",
-        mainEntityOfPage: {
-          "@type": "WebPage",
-          "@id": `https://gianmarco.xyz/blog/${slug}`,
-        },
-        headline: frontmatter?.title || title,
-        description: frontmatter?.description || title,
-        image: "https://gianmarco.xyz/og-image.png", //TODO: dynamic
-        author: {
-          "@type": "Person",
-          name: "Gianmarco",
-          url: "https://gianmarco.xyz",
-          sameAs: [
-            "https://www.linkedin.com/in/gianmarco-cavallo",
-            "https://github.com/Ladvace",
-          ],
-        },
-        publisher: {
-          "@type": "Organization",
-          name: "Gianmarco",
-          logo: {
-            "@type": "ImageObject",
-            url: "https://gianmarco.xyz/og-image.png",
-          },
-        },
-        datePublished: frontmatter?.pubDate || new Date().toISOString(),
-        dateModified: frontmatter?.pubDate || new Date().toISOString(),
-      };
+	page !== "blog"
+		? {
+				"@context": "http://schema.org",
+				"@type": "Person",
+				name: "i-yuya",
+				url: "http://localhost:4321",
+				sameAs: [
+					"https://www.linkedin.com/in/gianmarco-cavallo",
+					"https://github.com/Ladvace",
+				],
+				image: "http://localhost:4321/me.png",
+				jobTitle: "Freelance Frontend Developer",
+				worksFor: {
+					"@type": "Organization",
+					name: "Self-Employed",
+					address: {
+						"@type": "PostalAddress",
+						addressLocality: "Italy",
+						addressCountry: "IT",
+					},
+				},
+				nationality: {
+					"@type": "Country",
+					name: "Japan",
+				},
+			}
+		: {
+				"@context": "http://schema.org",
+				"@type": "BlogPosting",
+				mainEntityOfPage: {
+					"@type": "WebPage",
+					"@id": `http://localhost:4321/blog/${slug}`,
+				},
+				headline: frontmatter?.title || title,
+				description: frontmatter?.description || title,
+				image: "http://localhost:4321/og-image.png", //TODO: dynamic
+				author: {
+					"@type": "Person",
+					name: "Gianmarco",
+					url: "http://localhost:4321",
+					sameAs: [
+						"https://www.linkedin.com/in/gianmarco-cavallo",
+						"https://github.com/Ladvace",
+					],
+				},
+				publisher: {
+					"@type": "Organization",
+					name: "Gianmarco",
+					logo: {
+						"@type": "ImageObject",
+						url: "http://localhost:4321/og-image.png",
+					},
+				},
+				datePublished: frontmatter?.pubDate || new Date().toISOString(),
+				dateModified: frontmatter?.pubDate || new Date().toISOString(),
+			};
 ---
 
 <!doctype html>
@@ -97,7 +98,7 @@ const schema =
     <meta property="og:url" content={Astro.url.origin} />
     <meta
       property="og:image"
-      content={image || "https://gianmarco.xyz/og-image.png"}
+      content={image || "https://pbs.twimg.com/profile_images/1857822765048541189/NiYBKc5m_400x400.jpg"}
     />
     <!-- Basic Twitter Card tags -->
     <meta name="twitter:card" content="summary_large_image" />
@@ -105,14 +106,14 @@ const schema =
     <meta name="twitter:description" content={description} />
     <meta
       name="twitter:image"
-      content={image || "https://gianmarco.xyz/og-image.png"}
+      content={image || "https://pbs.twimg.com/profile_images/1857822765048541189/NiYBKc5m_400x400.jpg"}
     />
 
     <link rel="preconnect" href="https://cdn.fontshare.com" />
     <script type="application/ld+json" set:html={JSON.stringify(schema)} />
   </head>
   <body
-    class="bg-darkslate-700 md:h-screen flex flex-col justify-center items-center"
+    class="bg-latte md:h-screen flex flex-col justify-center items-center"
   >
     <slot name="loader" />
     <slot />
@@ -121,16 +122,8 @@ const schema =
 
 <style is:global>
   @font-face {
-    font-family: "CabinetGrotesk";
-    src: url("/fonts/CabinetGrotesk-Variable.ttf") format("truetype-variations");
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
-    font-weight: 100 1000;
-  }
-  @font-face {
-    font-family: "Satoshi";
-    src: url("/fonts/Satoshi-Variable.ttf") format("truetype-variations");
+    font-family: "NotoSansJP";
+    src: url("/fonts/NotoSansJP-VariableFont_wght.ttf") format("truetype-variations");
     font-weight: normal;
     font-style: normal;
     font-display: swap;
@@ -139,7 +132,7 @@ const schema =
 
   body {
     margin: 0;
-    font-family: "Satoshi", sans-serif;
+    font-family: "NotoSansJP", sans-serif;
     -webkit-font-smoothing: antialiased;
   }
 
@@ -149,10 +142,10 @@ const schema =
   h4,
   h5,
   h6 {
-    font-family: "Cabinet Grotesk", sans-serif;
+    font-family: "NotoSansJP", sans-serif;
   }
   p {
-    font-family: "Satoshi";
+    font-family: "NotoSansJP";
   }
 
   b {

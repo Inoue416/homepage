@@ -1,70 +1,112 @@
-// uno.config.ts
-import { defineConfig, presetUno, presetWebFonts } from "unocss";
+import { defineConfig, presetUno, presetIcons } from "unocss";
 
 export default defineConfig({
-  content: {
-    filesystem: ["**/*.{html,js,ts,jsx,tsx,vue,svelte,astro}"],
-  },
-  theme: {
-    boxShadow: {
-      custom: `2px 2px 0`,
-      "custom-hover": `1px 1px 0`,
-    },
-    fontFamily: {
-      sans: ["CabinetGrotesk", "Satoshi"],
-    },
-    gridTemplateRows: {
-      "auto-250": "repeat(auto-fill, 250px)",
-    },
-    gridTemplateColumns: {
-      "4-minmax": "repeat(4, minmax(150px, 1fr))",
-    },
-    colors: {
-      gray: {
-        50: "#FAFAFA",
-        100: "#F5F5F5",
-        200: "#E5E5E5",
-        300: "#D4D4D4",
-        400: "#A3A3A3",
-        500: "#737373",
-        600: "#525252",
-        700: "#404040",
-        800: "#262626",
-        900: "#171717",
-      },
-      darkslate: {
-        50: "#3D3D3D",
-        100: "#2C2C2C",
-        200: "#262626",
-        300: "#202020",
-        400: "#1A1A1A",
-        500: "#171717" /* Exactly your example for the background */,
-        600: "#141414",
-        700: "#111111",
-        800: "#0E0E0E",
-        900: "#0B0B0B" /* Deeper and darker */,
-      },
-      primary: {
-        100: "#F9CDD3",
-        200: "#F3A3AA",
-        300: "#EC7981",
-        400: "#E64F59",
-        500: "#E63946",
-        600: "#CF2F3D",
-        700: "#B82534",
-        800: "#A01B2B",
-        900: "#891321",
-      },
-    },
-  },
   presets: [
     presetUno(),
-    presetWebFonts({
-      provider: "fontshare",
-      fonts: {
-        sans: ["Cabinet Grotesk", "Satoshi"],
-        serif: "Zodiak",
-      },
-    }),
   ],
-});
+  theme: {
+    colors: {
+      light: {
+        primary: {
+          DEFAULT: '#8B593E',
+          cream: '#E8D0B8',
+          foam: '#F4E6D8',
+        },
+        accent: {
+          caramel: '#C68B59',
+          mocha: '#6F4E37',
+          hover: '#D4A982',      // ホバー時のボーダー色
+        },
+        background: {
+          DEFAULT: '#F7EFE4',
+          subtle: '#EFE0CC',
+          muted: '#E2CDB0',
+        },
+        text: {
+          DEFAULT: '#4A3728',
+          muted: '#7C5E4C',
+          subtle: '#9B7B66',
+          white: '#FFFAF5',
+        },
+        border: {
+          DEFAULT: '#D4B88F',
+          subtle: '#E2CDB0',
+          hover: '#C68B59',      // ホバー時のボーダー色
+        }
+      },
+      dark: {
+        primary: {
+          DEFAULT: '#B98B6F',
+          cream: '#D4B88F',
+          foam: '#E2CDB0',
+        },
+        accent: {
+          caramel: '#DCA77D',
+          mocha: '#9B7B66',
+          hover: '#E8C4A3',      // ホバー時のボーダー色
+        },
+        background: {
+          DEFAULT: '#362F2D',
+          subtle: '#423A38',
+          muted: '#4E4644',
+        },
+        text: {
+          DEFAULT: '#F4E6D8',
+          muted: '#E8D0B8',
+          subtle: '#D4B88F',
+          white: '#FFFAF5',
+        },
+        border: {
+          DEFAULT: '#4E4644',
+          subtle: '#423A38',
+          hover: '#B98B6F',      // ホバー時のボーダー色
+        }
+      }
+    }
+  },
+  shortcuts: {
+    // ベース背景
+    'bg-latte': 'bg-light-background dark:bg-dark-background',
+    
+    // ボタン
+    'btn-latte': 'bg-light-primary text-light-text-white hover:bg-light-accent-caramel dark:bg-dark-primary dark:text-dark-text-white dark:hover:bg-dark-accent-caramel transition-colors duration-200 rounded-lg px-4 py-2',
+    'btn-latte-outline': 'border-2 border-light-primary text-light-primary hover:bg-light-primary hover:text-light-text-white dark:border-dark-primary dark:text-dark-primary dark:hover:bg-dark-primary dark:hover:text-dark-text-white transition-colors duration-200 rounded-lg px-4 py-2',
+    
+    // ホバーエフェクト付きカード
+    'card-latte': `
+      bg-light-background-subtle dark:bg-dark-background-subtle
+      border border-light-border dark:border-dark-border
+      hover:border-light-border-hover dark:hover:border-dark-border-hover
+      rounded-xl p-6 shadow-sm
+      hover:shadow-md
+      transform hover:-translate-y-0.5
+      transition-all duration-200 ease-in-out
+    `,
+    'card-latte-foam': `
+      bg-light-primary-foam dark:bg-dark-primary-foam
+      border border-light-border dark:border-dark-border
+      hover:border-light-accent-hover dark:hover:border-dark-accent-hover
+      rounded-xl p-6 shadow-sm
+      hover:shadow-md
+      transform hover:-translate-y-0.5
+      transition-all duration-200 ease-in-out
+    `,
+    
+    // インタラクティブカード（より強調されたホバーエフェクト）
+    'card-latte-interactive': `
+      bg-light-background-subtle dark:bg-dark-background-subtle
+      border-2 border-light-border dark:border-dark-border
+      hover:border-light-accent-hover dark:hover:border-dark-accent-hover
+      rounded-xl p-6
+      shadow-sm hover:shadow-lg
+      transform hover:-translate-y-1
+      transition-all duration-300 ease-in-out
+      cursor-pointer
+    `,
+    
+    // テキストスタイル
+    'text-latte': 'text-light-text dark:text-dark-text',
+    'text-latte-muted': 'text-light-text-muted dark:text-dark-text-muted',
+    'text-foam': 'text-light-primary-foam dark:text-dark-primary-foam',
+  }
+})
