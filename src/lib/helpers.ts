@@ -1,6 +1,6 @@
 export function trimText(input: string, maxLength = 100): string {
 	if (input.length <= maxLength) return input;
-	return input.substring(0, maxLength - 3) + "...";
+	return `${input.substring(0, maxLength - 3)}...`;
 }
 export function getCurrentTime(): Date {
 	// Create a date object with the current UTC time
