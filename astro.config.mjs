@@ -12,7 +12,8 @@ import cloudflare from "@astrojs/cloudflare";
 
 // https://astro.build/config
 export default defineConfig({
-    site: "homepage-7xc.pages.dev",
+    // カスタムドメインを持ってないのでコメントアウト
+    // site: "http://localhost:4321",
     integrations: [solidJs(), UnoCSS({ injectReset: true }), icon(), svelte()],
     markdown: {
         remarkPlugins: [remarkReadingTime],

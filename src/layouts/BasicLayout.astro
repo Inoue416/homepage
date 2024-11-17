@@ -28,20 +28,17 @@ const schema =
 				"@context": "http://schema.org",
 				"@type": "Person",
 				name: "i-yuya",
-				url: "http://localhost:4321",
-				sameAs: [
-					"https://www.linkedin.com/in/gianmarco-cavallo",
-					"https://github.com/Ladvace",
-				],
-				image: "http://localhost:4321/me.png",
-				jobTitle: "Freelance Frontend Developer",
+				// url: "http://localhost:4321",
+				sameAs: ["https://github.com/Inoue416"],
+				// image: "http://localhost:4321/me.png",
+				jobTitle: "Programmer",
 				worksFor: {
 					"@type": "Organization",
 					name: "Self-Employed",
 					address: {
 						"@type": "PostalAddress",
-						addressLocality: "Italy",
-						addressCountry: "IT",
+						addressLocality: "Japan",
+						addressCountry: "JP",
 					},
 				},
 				nationality: {
@@ -54,26 +51,23 @@ const schema =
 				"@type": "BlogPosting",
 				mainEntityOfPage: {
 					"@type": "WebPage",
-					"@id": `http://localhost:4321/blog/${slug}`,
+					"@id": `${slug}`,
 				},
 				headline: frontmatter?.title || title,
 				description: frontmatter?.description || title,
-				image: "http://localhost:4321/og-image.png", //TODO: dynamic
+				// image: `me.png`, //TODO: dynamic
 				author: {
 					"@type": "Person",
-					name: "Gianmarco",
-					url: "http://localhost:4321",
-					sameAs: [
-						"https://www.linkedin.com/in/gianmarco-cavallo",
-						"https://github.com/Ladvace",
-					],
+					name: "i-yuya",
+					// url: "http://localhost:4321",
+					sameAs: ["https://github.com/Inoue416"],
 				},
 				publisher: {
 					"@type": "Organization",
-					name: "Gianmarco",
+					name: "i-yuya",
 					logo: {
 						"@type": "ImageObject",
-						url: "http://localhost:4321/og-image.png",
+						// url: "http://localhost:4321/me.png",
 					},
 				},
 				datePublished: frontmatter?.pubDate || new Date().toISOString(),
