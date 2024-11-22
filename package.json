@@ -20,7 +20,7 @@
 		"@astrojs/svelte": "^5.7.2",
 		"@iconify-json/ri": "^1.2.1",
 		"@rive-app/canvas": "^2.21.6",
-		"astro": "^4.16.5",
+		"astro": "^4.16.6",
 		"astro-icon": "^1.1.1",
 		"astro-robots-txt": "^1.0.0",
 		"autoprefixer": "^10.4.20",
@@ -32,20 +32,20 @@
 		"reading-time": "^1.5.0",
 		"solid-js": "^1.9.2",
 		"svelte": "^4.2.19",
-		"typescript": "^5.6.3"
+		"typescript": "^5.7.2"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.9.4",
 		"@types/d3": "^7.4.3",
-		"@unocss/astro": "^0.63.4",
-		"@unocss/postcss": "^0.63.4",
-		"@unocss/preset-uno": "^0.63.4",
-		"@unocss/reset": "^0.63.4",
+		"@unocss/astro": "^0.64.0",
+		"@unocss/postcss": "^0.64.0",
+		"@unocss/preset-uno": "^0.64.0",
+		"@unocss/reset": "^0.64.0",
 		"autoprefixer": "^10.4.20",
 		"markdown-it": "^14.1.0",
 		"motion": "^10.18.0",
 		"sanitize-html": "^2.13.1",
 		"typescript": "^5.6.3",
-		"unocss": "^0.63.4"
+		"unocss": "^0.64.0"
 	}
 }
