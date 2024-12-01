@@ -9,95 +9,95 @@ importers:
   .:
     dependencies:
       '@astrojs/check':
-        specifier: ^0.9.4
+        specifier: 0.9.4
         version: 0.9.4(typescript@5.6.3)
       '@astrojs/netlify':
-        specifier: ^5.5.3
+        specifier: 5.5.4
         version: 5.5.4(@types/node@22.9.1)(astro@4.16.14(@types/node@22.9.1)(rollup@4.27.3)(typescript@5.6.3))
       '@astrojs/rss':
-        specifier: ^4.0.9
+        specifier: 4.0.9
         version: 4.0.9
       '@astrojs/sitemap':
-        specifier: ^3.2.1
+        specifier: 3.2.1
         version: 3.2.1
       '@astrojs/solid-js':
-        specifier: ^4.4.2
+        specifier: 4.4.4
         version: 4.4.4(@types/node@22.9.1)(solid-js@1.9.3)
       '@astrojs/svelte':
-        specifier: ^5.7.2
+        specifier: 5.7.3
         version: 5.7.3(astro@4.16.14(@types/node@22.9.1)(rollup@4.27.3)(typescript@5.6.3))(svelte@4.2.19)(typescript@5.6.3)(vite@5.4.11(@types/node@22.9.1))
       '@iconify-json/ri':
-        specifier: ^1.2.1
+        specifier: 1.2.3
         version: 1.2.3
       '@rive-app/canvas':
-        specifier: ^2.21.6
+        specifier: 2.23.10
         version: 2.23.10
       astro:
-        specifier: ^4.16.5
+        specifier: 4.16.14
         version: 4.16.14(@types/node@22.9.1)(rollup@4.27.3)(typescript@5.6.3)
       astro-icon:
-        specifier: ^1.1.1
+        specifier: 1.1.2
         version: 1.1.2
       astro-robots-txt:
-        specifier: ^1.0.0
+        specifier: 1.0.0
         version: 1.0.0
       autoprefixer:
-        specifier: ^10.4.20
+        specifier: 10.4.20
         version: 10.4.20(postcss@8.4.49)
       d3:
-        specifier: ^7.9.0
+        specifier: 7.9.0
         version: 7.9.0
       gsap:
-        specifier: ^3.12.5
+        specifier: 3.12.5
         version: 3.12.5
       lenis:
-        specifier: ^1.1.14
+        specifier: 1.1.16
         version: 1.1.16(vue@3.5.13(typescript@5.6.3))
       mdast-util-to-string:
-        specifier: ^4.0.0
+        specifier: 4.0.0
         version: 4.0.0
       motion:
-        specifier: ^10.18.0
+        specifier: 10.18.0
         version: 10.18.0
       reading-time:
-        specifier: ^1.5.0
+        specifier: 1.5.0
         version: 1.5.0
       solid-js:
-        specifier: ^1.9.2
+        specifier: 1.9.3
         version: 1.9.3
       svelte:
-        specifier: ^4.2.19
+        specifier: 4.2.19
         version: 4.2.19
       typescript:
-        specifier: ^5.6.3
+        specifier: 5.6.3
         version: 5.6.3
     devDependencies:
       '@biomejs/biome':
         specifier: 1.9.4
         version: 1.9.4
       '@types/d3':
-        specifier: ^7.4.3
+        specifier: 7.4.3
         version: 7.4.3
       '@unocss/astro':
-        specifier: ^0.63.4
+        specifier: 0.63.6
         version: 0.63.6(rollup@4.27.3)(typescript@5.6.3)(vite@5.4.11(@types/node@22.9.1))
       '@unocss/postcss':
-        specifier: ^0.63.4
+        specifier: 0.63.6
         version: 0.63.6(postcss@8.4.49)
       '@unocss/preset-uno':
-        specifier: ^0.63.4
+        specifier: 0.63.6
         version: 0.63.6
       '@unocss/reset':
-        specifier: ^0.63.4
+        specifier: 0.63.6
         version: 0.63.6
       markdown-it:
-        specifier: ^14.1.0
+        specifier: 14.1.0
         version: 14.1.0
       sanitize-html:
-        specifier: ^2.13.1
+        specifier: 2.13.1
         version: 2.13.1
       unocss:
-        specifier: ^0.63.4
+        specifier: 0.63.6
         version: 0.63.6(postcss@8.4.49)(rollup@4.27.3)(typescript@5.6.3)(vite@5.4.11(@types/node@22.9.1))
 
 packages:
@@ -4304,7 +4304,7 @@ snapshots:
 
   '@types/sax@1.2.7':
     dependencies:
-      '@types/node': 17.0.45
+      '@types/node': 22.9.1
 
   '@types/tar@6.1.13':
     dependencies:
