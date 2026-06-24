@@ -1,0 +1,126 @@
+---
+import { getCollection } from 'astro:content';
+import EntryList from '@/components/EntryList.astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import {
+  byNewest,
+  isPublished,
+  sectionDescriptions,
+  sectionLabels,
+  type ContentSection,
+} from '@/lib/content';
+
+const sections: ContentSection[] = ['blog', 'projects', 'notes', 'books'];
+const latestEntries = (
+  await Promise.all(
+    sections.map(async (section) => ({
+      section,
+      entries: (await getCollection(section))
+        .filter(isPublished)
+        .sort(byNewest)
+        .slice(0, 3),
+    })),
+  )
+).filter(({ entries }) => entries.length > 0);
+---
+
+<BaseLayout>
+  <section class="hero">
+    <div>
+      <p class="eyebrow">Personal site</p>
+      <h1>書く、作る、学ぶ。</h1>
+    </div>
+    <p class="lead">
+      ホームページ、ブログ、作ったもの、勉強や書籍のメモをひとつの場所にまとめます。
+      小さく書き始めて、あとから探しやすい形で育てていくための Astro
+      サイトです。
+    </p>
+  </section>
+
+  <section class="section-links" aria-label="Sections">
+    {
+      sections.map((section) => (
+        <a href={`/${section}/`}>
+          <span>{sectionLabels[section]}</span>
+          <small>{sectionDescriptions[section]}</small>
+        </a>
+      ))
+    }
+  </section>
+
+  {
+    latestEntries.map(({ section, entries }) => (
+      <section class="home-section">
+        <div class="section-title">
+          <h2>{sectionLabels[section]}</h2>
+          <a href={`/${section}/`}>すべて見る</a>
+        </div>
+        <EntryList entries={entries} section={section} />
+      </section>
+    ))
+  }
+</BaseLayout>
+
+<style>
+  .hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(18rem, 0.75fr);
+    gap: clamp(2rem, 8vw, 6rem);
+    align-items: end;
+    min-height: 48vh;
+    padding: clamp(2rem, 8vw, 6rem) 0;
+  }
+
+  .section-links {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+    gap: 1px;
+    overflow: hidden;
+    margin: 0 0 4rem;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--line);
+  }
+
+  .section-links a {
+    display: grid;
+    gap: 0.4rem;
+    min-height: 9rem;
+    padding: 1rem;
+    background: var(--surface);
+    text-decoration: none;
+  }
+
+  .section-links span {
+    font-weight: 800;
+  }
+
+  .section-links small {
+    color: var(--muted);
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+
+  .home-section {
+    margin-top: 4rem;
+  }
+
+  .section-title {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .section-title h2 {
+    margin: 0;
+  }
+
+  @media (max-width: 760px) {
+    .hero {
+      grid-template-columns: 1fr;
+      min-height: auto;
+    }
+  }
+</style>

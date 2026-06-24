@@ -1,0 +1,39 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import { formatDate, isPublished, sectionLabels } from '@/lib/content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+  const entries = (await getCollection('blog')).filter(isPublished);
+
+  return entries.map((entry) => ({
+    params: { slug: entry.id },
+    props: { entry },
+  }));
+}
+
+interface Props {
+  entry: CollectionEntry<'blog'>;
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+---
+
+<BaseLayout title={entry.data.title} description={entry.data.description}>
+  <article class="prose">
+    <p class="eyebrow">{sectionLabels.blog}</p>
+    <h1>{entry.data.title}</h1>
+    <div class="meta">
+      <time datetime={entry.data.pubDate.toISOString()}
+        >{formatDate(entry.data.pubDate)}</time
+      >
+      {
+        entry.data.updatedDate && (
+          <span>更新: {formatDate(entry.data.updatedDate)}</span>
+        )
+      }
+    </div>
+    <Content />
+  </article>
+</BaseLayout>

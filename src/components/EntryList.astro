@@ -1,0 +1,23 @@
+---
+import EntryCard from '@/components/EntryCard.astro';
+import type { AnyEntry, ContentSection } from '@/lib/content';
+
+interface Props {
+  entries: AnyEntry[];
+  section: ContentSection;
+}
+
+const { entries, section } = Astro.props;
+---
+
+{
+  entries.length > 0 ? (
+    <div class="grid">
+      {entries.map((entry) => (
+        <EntryCard entry={entry} section={section} />
+      ))}
+    </div>
+  ) : (
+    <p class="empty">まだ公開された記事はありません。</p>
+  )
+}

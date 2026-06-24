@@ -1,0 +1,28 @@
+---
+import { getCollection } from 'astro:content';
+import EntryList from '@/components/EntryList.astro';
+import {
+  byNewest,
+  isPublished,
+  sectionDescriptions,
+  sectionLabels,
+} from '@/lib/content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+
+const section = 'notes';
+const entries = (await getCollection(section))
+  .filter(isPublished)
+  .sort(byNewest);
+---
+
+<BaseLayout
+  title={sectionLabels[section]}
+  description={sectionDescriptions[section]}
+>
+  <section class="section-header">
+    <p class="eyebrow">Notes</p>
+    <h1>{sectionLabels[section]}</h1>
+    <p class="lead">{sectionDescriptions[section]}</p>
+  </section>
+  <EntryList entries={entries} section={section} />
+</BaseLayout>

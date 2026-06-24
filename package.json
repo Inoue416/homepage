@@ -1,0 +1,30 @@
+{
+  "name": "homepage",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro check && astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "format": "prettier --write --ignore-unknown \"src/**/*.{astro,ts,md,mdx}\" \"public/**/*.svg\" astro.config.mjs package.json tsconfig.json README.md .prettierrc"
+  },
+  "dependencies": {
+    "@astrojs/mdx": "7.0.0",
+    "@astrojs/rss": "4.0.18",
+    "@astrojs/sitemap": "3.7.3",
+    "astro": "7.0.2",
+    "sharp": "0.35.2"
+  },
+  "devDependencies": {
+    "@astrojs/check": "0.9.9",
+    "prettier": "3.8.4",
+    "prettier-plugin-astro": "0.14.1",
+    "typescript": "6.0.3"
+  },
+  "overrides": {
+    "yaml": "2.9.0"
+  }
+}

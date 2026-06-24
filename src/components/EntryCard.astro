@@ -1,0 +1,30 @@
+---
+import { formatDate, type AnyEntry, type ContentSection } from '@/lib/content';
+
+interface Props {
+  entry: AnyEntry;
+  section: ContentSection;
+}
+
+const { entry, section } = Astro.props;
+const href = `/${section}/${entry.id}/`;
+---
+
+<a class="card" href={href}>
+  <div class="meta">
+    <time datetime={entry.data.pubDate.toISOString()}
+      >{formatDate(entry.data.pubDate)}</time
+    >
+  </div>
+  <h3>{entry.data.title}</h3>
+  <p>{entry.data.description}</p>
+  {
+    entry.data.tags.length > 0 && (
+      <div class="tags" aria-label="Tags">
+        {entry.data.tags.map((tag) => (
+          <span class="tag">{tag}</span>
+        ))}
+      </div>
+    )
+  }
+</a>
