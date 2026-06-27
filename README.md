@@ -1,13 +1,35 @@
-# ホームページ
+# homepage
 
-## スタック一覧
-- Svelte
-- Astrojs
-- biomejs
-- renovatebot
-- Cloudflare Pages
--  UnoCSS
-など
+Astro で作る個人ホームページです。ブログ、作ったもの、勉強メモ、書籍メモを Markdown / MDX で管理できます。
 
-以下のリポジトリをもとにastroで持ってきて、改変して作ってます。
-https://github.com/Ladvace/astro-bento-portfolio
+## Commands
+
+```sh
+pnpm install
+pnpm dev
+pnpm lint
+pnpm format
+pnpm check
+pnpm build
+pnpm preview
+```
+
+## Content
+
+- `src/content/blog`: ブログ
+- `src/content/projects`: 作ったもの
+- `src/content/notes`: 勉強メモ
+- `src/content/books`: 書籍メモ
+
+Frontmatter の型は `src/content.config.ts` で管理しています。
+
+## Tooling
+
+- Package manager: pnpm
+- Linter / formatter: Biome
+- UI islands: Svelte
+- Styling: Tailwind CSS v4 with the official Vite plugin
+
+## Site URL
+
+公開 URL が決まったら、`astro.config.mjs` と `src/site.config.ts` の `http://localhost:4321` を実際の URL に変更してください。RSS と sitemap の URL 生成に使います。

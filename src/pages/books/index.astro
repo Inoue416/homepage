@@ -4,7 +4,7 @@ import EntryList from '@/components/EntryList.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { byNewest, isPublished, sectionDescriptions, sectionLabels } from '@/lib/content';
 
-const section = 'blog';
+const section = 'books';
 const entries = (await getCollection(section)).filter(isPublished).sort(byNewest);
 ---
 
@@ -13,7 +13,7 @@ const entries = (await getCollection(section)).filter(isPublished).sort(byNewest
   description={sectionDescriptions[section]}
 >
   <section class="section-header">
-    <p class="eyebrow">Blog</p>
+    <p class="eyebrow">Books</p>
     <h1>{sectionLabels[section]}</h1>
     <p class="lead">{sectionDescriptions[section]}</p>
   </section>

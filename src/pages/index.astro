@@ -1,75 +1,123 @@
 ---
-import Layout from "../layouts/Layout.astro";
-import Card from "../components/Card/index.astro";
-import IntroCard from "../components/IntroCard.astro";
-import ContactsCard from "../components/ContactsCard.astro";
-import TimeZone from "../components/TimeZoneCard.astro";
-import AboutMe from "../components/AboutMe.astro";
-import Hobby from "../components/Hobby.astro";
-import Products from "../components/Products.astro";
-// import Globe from "../components/Globe";
+import { getCollection } from 'astro:content';
+import EntryList from '@/components/EntryList.astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import {
+  byNewest,
+  type ContentSection,
+  isPublished,
+  sectionDescriptions,
+  sectionLabels,
+} from '@/lib/content';
+
+const sections: ContentSection[] = ['blog', 'projects', 'notes', 'books'];
+const latestEntries = (
+  await Promise.all(
+    sections.map(async (section) => ({
+      section,
+      entries: (await getCollection(section)).filter(isPublished).sort(byNewest).slice(0, 3),
+    })),
+  )
+).filter(({ entries }) => entries.length > 0);
 ---
 
-<script>
-  import { stagger, spring, timeline, type TimelineDefinition } from "motion";
-  import { loaderAnimation } from "../lib/constants";
-  const cards = document.querySelectorAll(".card");
+<BaseLayout>
+  <section class="hero">
+    <div>
+      <p class="eyebrow">Personal site</p>
+      <h1>書く、作る、学ぶ。</h1>
+    </div>
+    <p class="lead">
+      ホームページ、ブログ、作ったもの、勉強や書籍のメモをひとつの場所にまとめます。
+      小さく書き始めて、あとから探しやすい形で育てていくための Astro
+      サイトです。
+    </p>
+  </section>
 
-  const sequence = [
-    loaderAnimation,
-    [
-      cards,
-      { y: ["40%", "0%"], opacity: [0, 1] },
-      {
-        at: "-0.1",
-        duration: 0.4,
-        delay: stagger(0.3),
-        easing: spring({ velocity: 100, stiffness: 50, damping: 10 }),
-      },
-    ],
-  ];
+  <section class="section-links" aria-label="Sections">
+    {
+      sections.map((section) => (
+        <a href={`/${section}/`}>
+          <span>{sectionLabels[section]}</span>
+          <small>{sectionDescriptions[section]}</small>
+        </a>
+      ))
+    }
+  </section>
 
-  timeline(sequence as TimelineDefinition);
-</script>
+  {
+    latestEntries.map(({ section, entries }) => (
+      <section class="home-section">
+        <div class="section-title">
+          <h2>{sectionLabels[section]}</h2>
+          <a href={`/${section}/`}>すべて見る</a>
+        </div>
+        <EntryList entries={entries} section={section} />
+      </section>
+    ))
+  }
+</BaseLayout>
 
-<Layout
-  title="i-yuya - Programmer || Software Developer"
-  description="Web系のプログラマーやってます。主にフロントエンドやってます。"
->
-  <main
-    class="text-light-primary dark:text-dark-primary m-auto p-2 grid gap-2 max-w-6xl overflow-hidden relative w-full sm:p-4 sm:gap-2 md:grid-cols-2 md:gap-3 md:p-6 lg:h-screen lg:grid-rows-8 lg:grid-cols-4 lg:gap-4 lg:max-h-[800px]"
-  >
-    <IntroCard />
-    <AboutMe />
-    <ContactsCard />
-    <TimeZone />
-    <!-- <Card
-      colSpan="md:col-span-1"
-      rowSpan="md:row-span-1"
-      title="Countries I visited"
-      href="travel"
-      colorText="text-neutral-900"
-    >
-      <div class="h-full w-full absolute inset-0 -z-10">
-        <Globe client:load />
-      </div>
-    </Card> -->
-    <Products />
-    <Hobby />
-    <Card
-      colSpan="md:col-span-1"
-      rowSpan="md:row-span-2 flex gap-4"
-      title="Blog"
-      href="/blog"
-    />
-    <Card colSpan="md:col-span-1" rowSpan="md:row-span-1">
-      <p class="text-xs">
-        © 2024 · Crafted using <a
-          href="https://astro.build/"
-          target="_blank"
-          class="text-red-500">Astro</a
-        > - i-yuya
-      </p>
-    </Card>
-  </main>
-</Layout>
+<style>
+  .hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(18rem, 0.75fr);
+    gap: clamp(2rem, 8vw, 6rem);
+    align-items: end;
+    min-height: 48vh;
+    padding: clamp(2rem, 8vw, 6rem) 0;
+  }
+
+  .section-links {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+    gap: 1px;
+    overflow: hidden;
+    margin: 0 0 4rem;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--line);
+  }
+
+  .section-links a {
+    display: grid;
+    gap: 0.4rem;
+    min-height: 9rem;
+    padding: 1rem;
+    background: var(--surface);
+    text-decoration: none;
+  }
+
+  .section-links span {
+    font-weight: 800;
+  }
+
+  .section-links small {
+    color: var(--muted);
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+
+  .home-section {
+    margin-top: 4rem;
+  }
+
+  .section-title {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .section-title h2 {
+    margin: 0;
+  }
+
+  @media (max-width: 760px) {
+    .hero {
+      grid-template-columns: 1fr;
+      min-height: auto;
+    }
+  }
+</style>
