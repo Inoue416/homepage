@@ -1,0 +1,4 @@
+interface:
+  display_name: "Astro Homepage Maintainer"
+  short_description: "Maintain this Astro personal site safely"
+  default_prompt: "Use $astro-homepage-maintainer to implement and verify a homepage change."

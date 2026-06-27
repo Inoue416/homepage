@@ -1,0 +1,41 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "^(Bash|exec_command|functions\\.exec_command)$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/usr/bin/python3 \"$(git rev-parse --show-toplevel)/.codex/hooks/project_guard.py\" pre-tool",
+            "timeout": 10,
+            "statusMessage": "Checking project command policy"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/usr/bin/python3 \"$(git rev-parse --show-toplevel)/.codex/hooks/project_guard.py\" user-prompt",
+            "timeout": 10,
+            "statusMessage": "Checking prompt for accidental secrets"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/usr/bin/python3 \"$(git rev-parse --show-toplevel)/.codex/hooks/project_guard.py\" stop",
+            "timeout": 10,
+            "statusMessage": "Checking project verification reminders"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -16,7 +16,8 @@
     "check:code": "biome check .",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:e2e": "pnpm build && playwright test"
+    "test:e2e": "pnpm build && playwright test",
+    "verify:codex": "python3 .codex/verify_harness.py"
   },
   "dependencies": {
     "@astrojs/mdx": "7.0.0",
