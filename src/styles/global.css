@@ -1,17 +1,31 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@theme {
+  --color-bg: #f8f7f2;
+  --color-surface: #ffffff;
+  --color-text: #202124;
+  --color-muted: #62615c;
+  --color-line: #dedbd2;
+  --color-accent: #0f766e;
+  --color-accent-strong: #0b4f4a;
+  --color-ink: #172554;
+  --radius-card: 8px;
+  --font-sans:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
 
 :root {
   color-scheme: light;
-  --bg: #f8f7f2;
-  --surface: #ffffff;
-  --text: #202124;
-  --muted: #62615c;
-  --line: #dedbd2;
-  --accent: #0f766e;
-  --accent-strong: #0b4f4a;
-  --ink: #172554;
-  font-family:
-    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --bg: var(--color-bg);
+  --surface: var(--color-surface);
+  --text: var(--color-text);
+  --muted: var(--color-muted);
+  --line: var(--color-line);
+  --accent: var(--color-accent);
+  --accent-strong: var(--color-accent-strong);
+  --ink: var(--color-ink);
+  font-family: var(--font-sans);
 }
 
 * {
@@ -173,6 +187,22 @@ p {
 }
 
 .prose {
+  --tw-prose-body: var(--text);
+  --tw-prose-headings: var(--text);
+  --tw-prose-lead: var(--muted);
+  --tw-prose-links: var(--accent-strong);
+  --tw-prose-bold: var(--text);
+  --tw-prose-counters: var(--muted);
+  --tw-prose-bullets: var(--accent);
+  --tw-prose-hr: var(--line);
+  --tw-prose-quotes: var(--text);
+  --tw-prose-quote-borders: var(--line);
+  --tw-prose-captions: var(--muted);
+  --tw-prose-code: var(--ink);
+  --tw-prose-pre-code: #f8fafc;
+  --tw-prose-pre-bg: #172554;
+  --tw-prose-th-borders: var(--line);
+  --tw-prose-td-borders: var(--line);
   max-width: 760px;
 }
 
