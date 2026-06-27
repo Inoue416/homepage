@@ -1,0 +1,4 @@
+interface:
+  display_name: "Homepage Content Author"
+  short_description: "Add typed Markdown and MDX content"
+  default_prompt: "Use $homepage-content-author to add or revise content in this homepage."
