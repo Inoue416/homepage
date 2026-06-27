@@ -18,19 +18,24 @@ test('renders the dashboard homepage navigation and key panels', async ({ page }
   await expect(page.getByTestId('home-dashboard')).toBeVisible();
 });
 
-test('fits the dashboard into one desktop viewport', async ({ page }) => {
-  await page.setViewportSize({ width: 1440, height: 900 });
+test('fits the full homepage into one desktop viewport', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 720 });
   await page.goto('/');
 
   const dashboard = page.getByTestId('home-dashboard');
   const box = await dashboard.boundingBox();
+  const pageHeight = await page.evaluate(() => document.documentElement.scrollHeight);
+  const viewportHeight = page.viewportSize()?.height;
 
   if (!box) {
     throw new Error('home dashboard was not rendered');
   }
 
-  expect(box.y + box.height).toBeLessThanOrEqual(900);
+  expect(viewportHeight).toBeDefined();
+  expect(pageHeight).toBeLessThanOrEqual(viewportHeight ?? 0);
+  expect(box.y + box.height).toBeLessThanOrEqual(viewportHeight ?? 0);
   await expect(page.getByRole('heading', { name: '最近の更新' })).toBeInViewport();
+  await expect(page.getByRole('contentinfo')).toBeInViewport();
 });
 
 test('keeps primary layout readable on mobile', async ({ page }) => {
