@@ -1,5 +1,5 @@
-import rss from '@astrojs/rss';
 import { getCollection } from 'astro:content';
+import rss from '@astrojs/rss';
 import { byNewest, isPublished } from '@/lib/content';
 import { site } from '@/site.config';
 

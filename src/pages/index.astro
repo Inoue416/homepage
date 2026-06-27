@@ -4,10 +4,10 @@ import EntryList from '@/components/EntryList.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import {
   byNewest,
+  type ContentSection,
   isPublished,
   sectionDescriptions,
   sectionLabels,
-  type ContentSection,
 } from '@/lib/content';
 
 const sections: ContentSection[] = ['blog', 'projects', 'notes', 'books'];
@@ -15,10 +15,7 @@ const latestEntries = (
   await Promise.all(
     sections.map(async (section) => ({
       section,
-      entries: (await getCollection(section))
-        .filter(isPublished)
-        .sort(byNewest)
-        .slice(0, 3),
+      entries: (await getCollection(section)).filter(isPublished).sort(byNewest).slice(0, 3),
     })),
   )
 ).filter(({ entries }) => entries.length > 0);
