@@ -1,123 +1,615 @@
 ---
 import { getCollection } from 'astro:content';
-import EntryList from '@/components/EntryList.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import {
   byNewest,
   type ContentSection,
+  formatDate,
   isPublished,
-  sectionDescriptions,
   sectionLabels,
 } from '@/lib/content';
+import { site } from '@/site.config';
 
 const sections: ContentSection[] = ['blog', 'projects', 'notes', 'books'];
-const latestEntries = (
-  await Promise.all(
-    sections.map(async (section) => ({
+const sectionEntries = await Promise.all(
+  sections.map(async (section) => {
+    const entries = (await getCollection(section)).filter(isPublished).sort(byNewest);
+
+    return {
       section,
-      entries: (await getCollection(section)).filter(isPublished).sort(byNewest).slice(0, 3),
-    })),
-  )
-).filter(({ entries }) => entries.length > 0);
+      entries,
+      latestEntry: entries[0],
+    };
+  }),
+);
+const latestEntries = sectionEntries
+  .flatMap(({ entries, section }) => entries.slice(0, 2).map((entry) => ({ entry, section })))
+  .sort((a, b) => byNewest(a.entry, b.entry))
+  .slice(0, 4);
 ---
 
 <BaseLayout>
-  <section class="hero">
-    <div>
-      <p class="eyebrow">Personal site</p>
-      <h1>書く、作る、学ぶ。</h1>
-    </div>
-    <p class="lead">
-      ホームページ、ブログ、作ったもの、勉強や書籍のメモをひとつの場所にまとめます。
-      小さく書き始めて、あとから探しやすい形で育てていくための Astro
-      サイトです。
-    </p>
-  </section>
-
-  <section class="section-links" aria-label="Sections">
-    {
-      sections.map((section) => (
-        <a href={`/${section}/`}>
-          <span>{sectionLabels[section]}</span>
-          <small>{sectionDescriptions[section]}</small>
-        </a>
-      ))
-    }
-  </section>
-
-  {
-    latestEntries.map(({ section, entries }) => (
-      <section class="home-section">
-        <div class="section-title">
-          <h2>{sectionLabels[section]}</h2>
-          <a href={`/${section}/`}>すべて見る</a>
+  <div class="home-dashboard" data-testid="home-dashboard">
+    <section class="profile-card" aria-labelledby="dashboard-title">
+      <div class="avatar-frame">
+        <img src="/dashboard-avatar.webp" alt="" width="512" height="512" loading="eager" />
+      </div>
+      <div class="profile-summary">
+        <p class="eyebrow">Dashboard</p>
+        <h1 id="dashboard-title">{site.author}</h1>
+        <p class="lead">
+          プロフィール文のサンプルです。作っているもの、学んでいること、日々のメモをここにまとめます。
+        </p>
+        <div class="account-links" aria-label="アカウント">
+          <a href="#" aria-label="X アカウントのサンプル">X</a>
+          <a href="#" aria-label="GitHub アカウントのサンプル">GitHub</a>
+          <a href="#" aria-label="Zenn アカウントのサンプル">Zenn</a>
         </div>
-        <EntryList entries={entries} section={section} />
-      </section>
-    ))
-  }
+      </div>
+      <div class="clock-card" aria-label="JSTの現在時刻">
+        <span>JST</span>
+        <time data-jst-time>--:--:--</time>
+        <small data-jst-date>loading...</small>
+      </div>
+      <nav class="quick-actions" aria-label="主要セクション">
+        <a href="/blog/">ブログ</a>
+        <a href="/projects/">作ったもの</a>
+      </nav>
+    </section>
+
+    <section class="section-panel section-panel-main" aria-labelledby="sections-title">
+      <div class="panel-heading">
+        <p class="eyebrow">Sections</p>
+        <h2 id="sections-title">見るもの</h2>
+      </div>
+      <div class="section-grid">
+        {
+          sectionEntries.map(({ section, entries, latestEntry }) => (
+            <a class="section-tile" href={`/${section}/`}>
+              <strong>{sectionLabels[section]}</strong>
+              <span>{entries.length}件</span>
+              <time datetime={latestEntry?.data.pubDate.toISOString()}>
+                {latestEntry ? formatDate(latestEntry.data.pubDate) : 'coming soon...'}
+              </time>
+            </a>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="section-panel latest-panel" aria-labelledby="latest-title">
+      <div class="panel-heading">
+        <p class="eyebrow">Latest</p>
+        <h2 id="latest-title">最近の更新</h2>
+      </div>
+      {
+        latestEntries.length > 0 ? (
+          <ol class="latest-list">
+            {latestEntries.map(({ entry, section }) => (
+              <li>
+                <a href={`/${section}/${entry.id}/`}>
+                  <span>{sectionLabels[section]}</span>
+                  <strong>{entry.data.title}</strong>
+                  <time datetime={entry.data.pubDate.toISOString()}>
+                    {formatDate(entry.data.pubDate)}
+                  </time>
+                </a>
+              </li>
+            ))}
+          </ol>
+        ) : (
+          <p class="empty-dashboard">coming soon...</p>
+        )
+      }
+    </section>
+  </div>
 </BaseLayout>
 
+<script>
+  const timeNode = document.querySelector('[data-jst-time]');
+  const dateNode = document.querySelector('[data-jst-date]');
+  const timeFormatter = new Intl.DateTimeFormat('ja-JP', {
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    timeZone: 'Asia/Tokyo',
+  });
+  const dateFormatter = new Intl.DateTimeFormat('ja-JP', {
+    weekday: 'short',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    timeZone: 'Asia/Tokyo',
+  });
+
+  function updateClock() {
+    const now = new Date();
+
+    if (timeNode instanceof HTMLTimeElement) {
+      timeNode.textContent = timeFormatter.format(now);
+      timeNode.dateTime = now.toISOString();
+    }
+
+    if (dateNode instanceof HTMLElement) {
+      dateNode.textContent = dateFormatter.format(now);
+    }
+  }
+
+  updateClock();
+  window.setInterval(updateClock, 1000);
+</script>
+
 <style>
-  .hero {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(18rem, 0.75fr);
-    gap: clamp(2rem, 8vw, 6rem);
-    align-items: end;
-    min-height: 48vh;
-    padding: clamp(2rem, 8vw, 6rem) 0;
+  :global(main) {
+    padding-top: clamp(0.75rem, 2vw, 1.5rem);
+    padding-bottom: clamp(1.5rem, 3vw, 2.5rem);
   }
 
-  .section-links {
+  .home-dashboard {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
-    gap: 1px;
-    overflow: hidden;
-    margin: 0 0 4rem;
-    border: 1px solid var(--line);
+    grid-template-columns: minmax(18rem, 0.72fr) minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr) auto;
+    gap: 1rem;
+    min-height: min(42rem, calc(100svh - 9rem));
+    animation: dashboard-enter 620ms ease-out both;
+  }
+
+  .profile-card,
+  .section-panel {
+    border: 1px solid rgb(86 61 33 / 0.16);
     border-radius: 8px;
-    background: var(--line);
+    box-shadow: 0 16px 44px rgb(67 45 19 / 0.1);
   }
 
-  .section-links a {
+  .profile-card {
+    position: relative;
+    isolation: isolate;
     display: grid;
-    gap: 0.4rem;
-    min-height: 9rem;
-    padding: 1rem;
-    background: var(--surface);
+    grid-row: 1 / span 2;
+    grid-template-rows: auto 1fr auto auto;
+    gap: 1rem;
+    align-content: start;
+    overflow: hidden;
+    padding: clamp(1.1rem, 3vw, 1.75rem);
+    background:
+      linear-gradient(132deg, rgb(255 244 205 / 0.9), rgb(236 199 127 / 0.82)),
+      #efd08b;
+  }
+
+  .profile-card::before,
+  .profile-card::after {
+    position: absolute;
+    inset: -7%;
+    z-index: -1;
+    pointer-events: none;
+    content: "";
+  }
+
+  .profile-card::before {
+    background:
+      linear-gradient(166deg, transparent 0 9%, rgb(255 210 62 / 0.78) 9% 20%, transparent 20% 100%),
+      linear-gradient(166deg, transparent 0 23%, rgb(241 151 42 / 0.48) 23% 33%, transparent 33% 100%),
+      linear-gradient(166deg, transparent 0 39%, rgb(255 242 196 / 0.78) 39% 49%, transparent 49% 100%),
+      linear-gradient(166deg, transparent 0 57%, rgb(244 188 83 / 0.5) 57% 70%, transparent 70% 100%),
+      linear-gradient(166deg, transparent 0 78%, rgb(255 239 178 / 0.68) 78% 87%, transparent 87% 100%),
+      linear-gradient(134deg, rgb(255 246 214 / 0.6), rgb(235 191 109 / 0.28));
+    background-size:
+      auto,
+      auto,
+      auto,
+      auto,
+      auto,
+      auto;
+    background-position:
+      center,
+      center,
+      center,
+      center,
+      center,
+      center;
+    filter: saturate(1.02);
+    opacity: 0.98;
+    transform: rotate(-2deg) scale(1.04);
+  }
+
+  .profile-card::after {
+    background:
+      linear-gradient(166deg, transparent 0 11%, rgb(255 255 255 / 0.44) 11% 13%, transparent 13% 100%),
+      linear-gradient(166deg, transparent 0 36%, rgb(255 255 255 / 0.32) 36% 38%, transparent 38% 100%),
+      linear-gradient(166deg, transparent 0 72%, rgb(255 255 255 / 0.26) 72% 74%, transparent 74% 100%),
+      repeating-linear-gradient(166deg, transparent 0 18px, rgb(128 82 30 / 0.055) 18px 20px, transparent 20px 34px);
+    background-size:
+      auto,
+      auto,
+      auto,
+      auto;
+    filter: blur(0.15px);
+    mix-blend-mode: multiply;
+    opacity: 0.72;
+    transform: rotate(-2deg) scale(1.04);
+  }
+
+  .avatar-frame {
+    display: grid;
+    width: min(100%, 16rem);
+    aspect-ratio: 1;
+    justify-self: center;
+    place-items: center;
+    padding: 0.45rem;
+    overflow: hidden;
+    border: 1px solid rgb(106 79 42 / 0.18);
+    border-radius: 8px;
+    background: #f3dfad;
+    box-shadow: inset 0 1px 0 rgb(255 252 239 / 0.62);
+  }
+
+  .avatar-frame img {
+    width: min(100%, 16rem);
+    aspect-ratio: 1;
+    object-fit: cover;
+    border-radius: 6px;
+    filter: sepia(0.08) saturate(0.92);
+    animation: avatar-float 4.8s ease-in-out infinite;
+  }
+
+  .profile-summary {
+    align-self: center;
+  }
+
+  .eyebrow {
+    margin: 0 0 0.45rem;
+    color: #2f5f50;
+    font-size: 0.8rem;
+    font-weight: 900;
+  }
+
+  .profile-card h1 {
+    max-width: 10ch;
+    color: #332313;
+    font-size: clamp(3.2rem, 5.2vw, 5.4rem);
+  }
+
+  .lead {
+    max-width: 28rem;
+    margin-top: 1rem;
+    color: #4b3823;
+    font-size: clamp(1rem, 1.35vw, 1.15rem);
+    font-weight: 650;
+  }
+
+  .account-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+
+  .account-links a {
+    display: inline-flex;
+    min-height: 2.15rem;
+    align-items: center;
+    padding: 0.35rem 0.7rem;
+    border: 1px solid rgb(51 35 19 / 0.12);
+    border-radius: 999px;
+    background: rgb(255 249 225 / 0.58);
+    color: #3f2d1c;
+    font-size: 0.86rem;
+    font-weight: 850;
     text-decoration: none;
+    transition:
+      background-color 180ms ease,
+      transform 180ms ease;
   }
 
-  .section-links span {
-    font-weight: 800;
+  .account-links a:hover,
+  .quick-actions a:hover,
+  .section-tile:hover,
+  .latest-list a:hover {
+    transform: translateY(-2px);
   }
 
-  .section-links small {
-    color: var(--muted);
-    font-size: 0.9rem;
-    line-height: 1.6;
+  .account-links a:hover {
+    background: rgb(255 252 239 / 0.86);
   }
 
-  .home-section {
-    margin-top: 4rem;
+  .clock-card {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.15rem 0.7rem;
+    align-items: baseline;
+    padding: 0.8rem 0.9rem;
+    border: 1px solid rgb(86 61 33 / 0.14);
+    border-radius: 8px;
+    background: rgb(255 252 239 / 0.48);
+    color: #332313;
   }
 
-  .section-title {
+  .clock-card span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    color: #2f5f50;
+    font-size: 0.78rem;
+    font-weight: 950;
+  }
+
+  .clock-card span::before {
+    display: block;
+    width: 0.45rem;
+    height: 0.45rem;
+    background: #2f5f50;
+    border-radius: 999px;
+    content: "";
+    animation: clock-pulse 1.8s ease-in-out infinite;
+  }
+
+  .clock-card time {
+    justify-self: end;
+    font-size: clamp(1.55rem, 2.8vw, 2.4rem);
+    font-weight: 900;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .clock-card small {
+    grid-column: 1 / -1;
+    color: #6c5638;
+    font-size: 0.82rem;
+  }
+
+  .quick-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+  }
+
+  .quick-actions a {
+    display: inline-flex;
+    min-height: 2.55rem;
+    align-items: center;
+    justify-content: center;
+    padding: 0.55rem 0.9rem;
+    border-radius: 999px;
+    background: rgb(255 249 225 / 0.82);
+    color: #332313;
+    font-weight: 850;
+    text-decoration: none;
+    transition:
+      background-color 180ms ease,
+      transform 180ms ease;
+  }
+
+  .quick-actions a:first-child {
+    background: #2f5f50;
+    color: #fff9e1;
+  }
+
+  .section-panel {
+    min-height: 0;
+    padding: 1rem;
+    background: rgb(255 252 239 / 0.92);
+    animation: panel-enter 520ms ease-out both;
+  }
+
+  .latest-panel {
+    animation-delay: 90ms;
+  }
+
+  .panel-heading {
     display: flex;
     align-items: baseline;
     justify-content: space-between;
     gap: 1rem;
-    margin-bottom: 1rem;
+    margin-bottom: 0.85rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid rgb(86 61 33 / 0.14);
   }
 
-  .section-title h2 {
+  .panel-heading h2 {
+    margin: 0;
+    color: #332313;
+    font-size: clamp(1.35rem, 2vw, 1.75rem);
+  }
+
+  .section-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+  }
+
+  .section-tile {
+    display: grid;
+    gap: 0.25rem;
+    min-height: 7.2rem;
+    padding: 0.85rem;
+    border: 1px solid rgb(86 61 33 / 0.13);
+    border-radius: 8px;
+    background: #fff8df;
+    text-decoration: none;
+    transition:
+      border-color 180ms ease,
+      box-shadow 180ms ease,
+      transform 180ms ease;
+  }
+
+  .section-tile:hover {
+    border-color: rgb(47 95 80 / 0.35);
+    box-shadow: 0 12px 28px rgb(67 45 19 / 0.08);
+  }
+
+  .section-tile strong,
+  .latest-list strong {
+    color: #332313;
+    line-height: 1.35;
+  }
+
+  .section-tile span,
+  .section-tile time,
+  .latest-list time,
+  .empty-dashboard {
+    color: #6c5638;
+    font-size: 0.86rem;
+  }
+
+  .section-tile span {
+    width: fit-content;
+    margin-top: auto;
+    padding: 0.12rem 0.45rem;
+    border-radius: 999px;
+    background: #dfe9d7;
+    color: #2f5f50;
+    font-weight: 900;
+  }
+
+  .latest-panel {
+    align-self: stretch;
+  }
+
+  .latest-list {
+    display: grid;
+    gap: 0.55rem;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  .latest-list a {
+    display: grid;
+    grid-template-columns: 5.25rem minmax(0, 1fr) auto;
+    gap: 0.75rem;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid rgb(86 61 33 / 0.12);
+    text-decoration: none;
+    transition:
+      color 180ms ease,
+      transform 180ms ease;
+  }
+
+  .latest-list li:last-child a {
+    border-bottom: 0;
+  }
+
+  .latest-list span {
+    width: fit-content;
+    padding: 0.12rem 0.45rem;
+    border-radius: 999px;
+    background: #dfe9d7;
+    color: #2f5f50;
+    font-size: 0.74rem;
+    font-weight: 900;
+  }
+
+  .empty-dashboard {
     margin: 0;
   }
 
-  @media (max-width: 760px) {
-    .hero {
+  @keyframes dashboard-enter {
+    from {
+      transform: translateY(10px);
+    }
+
+    to {
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes panel-enter {
+    from {
+      transform: translateY(8px);
+    }
+
+    to {
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes avatar-float {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+
+    50% {
+      transform: translateY(-5px);
+    }
+  }
+
+  @keyframes clock-pulse {
+    0%,
+    100% {
+      opacity: 0.5;
+      transform: scale(0.9);
+    }
+
+    50% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  @media (max-width: 900px) {
+    :global(main) {
+      padding-top: 2rem;
+      padding-bottom: 5rem;
+    }
+
+    .home-dashboard {
       grid-template-columns: 1fr;
-      min-height: auto;
+      grid-template-rows: auto;
+      min-height: 0;
+    }
+
+    .profile-card {
+      grid-row: auto;
+      grid-template-rows: auto;
+    }
+
+    .avatar-frame {
+      width: 7rem;
+      justify-self: start;
+    }
+  }
+
+  @media (max-width: 620px) {
+    .section-grid,
+    .latest-list a {
+      grid-template-columns: 1fr;
+    }
+
+    .profile-card h1 {
+      font-size: clamp(2.35rem, 16vw, 4rem);
+    }
+
+    .clock-card {
+      grid-template-columns: 1fr;
+    }
+
+    .clock-card time {
+      justify-self: start;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .home-dashboard,
+    .section-panel,
+    .avatar-frame img,
+    .clock-card span::before {
+      animation: none;
+    }
+
+    .account-links a,
+    .quick-actions a,
+    .section-tile,
+    .latest-list a {
+      transition: none;
+    }
+
+    .account-links a:hover,
+    .quick-actions a:hover,
+    .section-tile:hover,
+    .latest-list a:hover {
+      transform: none;
     }
   }
 </style>

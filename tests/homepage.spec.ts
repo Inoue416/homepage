@@ -1,16 +1,36 @@
 import { expect, test } from '@playwright/test';
 
-test('renders the homepage navigation and section links', async ({ page }) => {
+test('renders the dashboard homepage navigation and key panels', async ({ page }) => {
   await page.goto('/');
 
   const navigation = page.getByRole('navigation', { name: 'Primary navigation' });
 
-  await expect(page).toHaveTitle(/inoueyuuya/);
+  await expect(page).toHaveTitle(/inoue\./);
   await expect(navigation.getByRole('link', { name: 'ブログ' })).toBeVisible();
   await expect(navigation.getByRole('link', { name: '作ったもの' })).toBeVisible();
   await expect(navigation.getByRole('link', { name: '勉強メモ' })).toBeVisible();
   await expect(navigation.getByRole('link', { name: '書籍メモ' })).toBeVisible();
-  await expect(page.getByRole('heading', { name: '書く、作る、学ぶ。' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'inoue.' })).toBeVisible();
+  await expect(page.getByLabel('JSTの現在時刻')).toBeVisible();
+  await expect(page.getByLabel('アカウント', { exact: true })).toBeVisible();
+  await expect(page.getByRole('heading', { name: '見るもの' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: '最近の更新' })).toBeVisible();
+  await expect(page.getByTestId('home-dashboard')).toBeVisible();
+});
+
+test('fits the dashboard into one desktop viewport', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto('/');
+
+  const dashboard = page.getByTestId('home-dashboard');
+  const box = await dashboard.boundingBox();
+
+  if (!box) {
+    throw new Error('home dashboard was not rendered');
+  }
+
+  expect(box.y + box.height).toBeLessThanOrEqual(900);
+  await expect(page.getByRole('heading', { name: '最近の更新' })).toBeInViewport();
 });
 
 test('keeps primary layout readable on mobile', async ({ page }) => {
@@ -18,5 +38,6 @@ test('keeps primary layout readable on mobile', async ({ page }) => {
 
   await expect(page.getByRole('banner')).toBeVisible();
   await expect(page.getByRole('main')).toBeVisible();
-  await expect(page.getByRole('heading', { name: '書く、作る、学ぶ。' })).toBeInViewport();
+  await expect(page.getByRole('heading', { name: 'inoue.' })).toBeInViewport();
+  await expect(page.getByRole('heading', { name: '見るもの' })).toBeVisible();
 });
