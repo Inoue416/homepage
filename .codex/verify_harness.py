@@ -18,6 +18,11 @@ HOOKS = ROOT / ".codex" / "hooks.json"
 HOOK_SCRIPT = ROOT / ".codex" / "hooks" / "project_guard.py"
 AGENTS_DIR = ROOT / ".codex" / "agents"
 SKILLS_DIR = ROOT / ".agents" / "skills"
+EXPECTED_AGENTS = {
+    "homepage-explorer": "homepage-explorer.toml",
+    "homepage-reviewer": "homepage-reviewer.toml",
+    "homepage-verifier": "homepage-verifier.toml",
+}
 
 
 def main() -> int:
@@ -47,9 +52,13 @@ def check_config() -> None:
     require(data.get("sandbox_mode") == "workspace-write", ".codex/config.toml must use workspace-write.")
     require(data.get("approval_policy") == "on-request", ".codex/config.toml must use on-request approvals.")
     require(data.get("features", {}).get("hooks") is True, ".codex/config.toml must enable hooks.")
+    require(data.get("features", {}).get("multi_agent") is True, ".codex/config.toml must enable subagents.")
     agents = data.get("agents", {})
     require(agents.get("max_depth") == 1, ".codex/config.toml must keep subagent depth at 1.")
     require(agents.get("max_threads", 0) >= 3, ".codex/config.toml must allow parallel subagents.")
+    for name, filename in EXPECTED_AGENTS.items():
+        agent = agents.get(name, {})
+        require(agent.get("config_file") == f"./agents/{filename}", f".codex/config.toml must register {name}.")
 
 
 def check_hooks() -> None:
@@ -68,7 +77,7 @@ def check_hooks() -> None:
 
 
 def check_custom_agents() -> None:
-    expected = {"homepage-explorer.toml", "homepage-reviewer.toml", "homepage-verifier.toml"}
+    expected = set(EXPECTED_AGENTS.values())
     actual = {path.name for path in AGENTS_DIR.glob("*.toml")}
     require(expected <= actual, f"Missing custom agent files: {sorted(expected - actual)}")
     for path in AGENTS_DIR.glob("*.toml"):
