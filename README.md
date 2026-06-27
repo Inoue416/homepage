@@ -10,6 +10,8 @@ pnpm dev
 pnpm lint
 pnpm format
 pnpm check
+pnpm test
+pnpm test:e2e
 pnpm build
 pnpm preview
 ```
@@ -29,6 +31,8 @@ Frontmatter の型は `src/content.config.ts` で管理しています。
 - Linter / formatter: Biome
 - UI islands: Svelte
 - Styling: Tailwind CSS v4 with the official Vite plugin
+- Unit tests: Vitest
+- E2E tests: Playwright
 
 ## Site URL
 
