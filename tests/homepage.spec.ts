@@ -10,6 +10,7 @@ test('renders the dashboard homepage navigation and key panels', async ({ page }
   await expect(navigation.getByRole('link', { name: '作ったもの' })).toBeVisible();
   await expect(navigation.getByRole('link', { name: '勉強メモ' })).toBeVisible();
   await expect(navigation.getByRole('link', { name: '書籍メモ' })).toBeVisible();
+  await expect(navigation.getByRole('link', { name: '写真UI案' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'inoue.' })).toBeVisible();
   await expect(page.getByLabel('JSTの現在時刻')).toBeVisible();
   await expect(page.getByLabel('アカウント', { exact: true })).toBeVisible();
